@@ -181,9 +181,9 @@ def normalize(bandM, cellInfo, chromSelect, bandDist, nLatent = 100, batchFlag =
         sc.pp.filter_cells(adata, min_counts=1)
 
         if(batchFlag is True):
-            scvi.data.setup_anndata(adata, batch_key = 'batch')
+            scvi.model.SCVI.setup_anndata(adata, batch_key = 'batch')
         else:
-            scvi.data.setup_anndata(adata)
+            scvi.model.SCVI.setup_anndata(adata)
         model = scvi.model.SCVI(adata, n_latent = nLatent)
     
         model.train(use_gpu = gpuFlag)
@@ -223,9 +223,9 @@ def normalize_for_pooling(bandM, cellInfo, chromSelect, pool_ind, nLatent = 100,
         sc.pp.filter_cells(adata, min_counts=1)
 
         if(batchFlag is True):
-            scvi.data.setup_anndata(adata, batch_key = 'batch')
+            scvi.model.SCVI.setup_anndata(adata, batch_key = 'batch')
         else:
-            scvi.data.setup_anndata(adata)
+            scvi.model.SCVI.setup_anndata(adata)
         model = scvi.model.SCVI(adata, n_latent = nLatent)
     
         model.train(use_gpu = gpuFlag)
