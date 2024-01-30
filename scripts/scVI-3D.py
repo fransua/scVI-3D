@@ -10,16 +10,17 @@
 
 import sys
 import os
-import glob
-import gc
 import argparse
 import pickle
 from tqdm import tqdm
 import scanpy as sc
 import numpy as np
 import pandas as pd
-import anndata
 import scvi
+try:
+    from scvi.model import SCVI as SCVI_data
+except ImportError:
+    from scvi import data as SCVI_data  # for back compatibility
 from joblib import Parallel, delayed
 from sklearn.decomposition import PCA
 # from loguru import logger
@@ -181,9 +182,9 @@ def normalize(bandM, cellInfo, chromSelect, bandDist, nLatent = 100, batchFlag =
         sc.pp.filter_cells(adata, min_counts=1)
 
         if(batchFlag is True):
-            scvi.model.SCVI.setup_anndata(adata, batch_key = 'batch')
+            SCVI_data.setup_anndata(adata, batch_key = 'batch')
         else:
-            scvi.model.SCVI.setup_anndata(adata)
+            SCVI_data.setup_anndata(adata)
         model = scvi.model.SCVI(adata, n_latent = nLatent)
     
         model.train(use_gpu = gpuFlag)
@@ -223,9 +224,9 @@ def normalize_for_pooling(bandM, cellInfo, chromSelect, pool_ind, nLatent = 100,
         sc.pp.filter_cells(adata, min_counts=1)
 
         if(batchFlag is True):
-            scvi.model.SCVI.setup_anndata(adata, batch_key = 'batch')
+            SCVI_data.setup_anndata(adata, batch_key = 'batch')
         else:
-            scvi.model.SCVI.setup_anndata(adata)
+            SCVI_data.setup_anndata(adata)
         model = scvi.model.SCVI(adata, n_latent = nLatent)
     
         model.train(use_gpu = gpuFlag)
@@ -809,7 +810,7 @@ if __name__ == "__main__":
             c = cellLabel)
         plt.setp(ax, xticks=[], yticks=[])
         cbar = plt.colorbar(boundaries=np.arange(len(list(colorDict.keys()))+1) - 0.5)
-        cbar.set_ticks(np.arange(len(list(colorDict.keys()))+2))
+        cbar.set_ticks(np.arange(len(list(colorDict.keys()))))
         cbar.set_ticklabels(list(colorDict.keys()))
         plt.title('UMAP Projection of the scHi-C Demo Data', fontsize=20)
         plt.savefig(outdir + '/figures/scVI-3D_norm_UMAP.pdf')  
@@ -830,7 +831,7 @@ if __name__ == "__main__":
             c = cellLabel)
         plt.setp(ax, xticks=[], yticks=[])
         cbar = plt.colorbar(boundaries=np.arange(len(list(colorDict.keys()))+1) - 0.5)
-        cbar.set_ticks(np.arange(len(list(colorDict.keys()))+2))
+        cbar.set_ticks(np.arange(len(list(colorDict.keys()))))
         cbar.set_ticklabels(list(colorDict.keys()))
         plt.title('t-SNE Projection of the scHi-C Demo Data', fontsize=20)
         plt.savefig(outdir + '/figures/scVI-3D_norm_TSNE.pdf')  
