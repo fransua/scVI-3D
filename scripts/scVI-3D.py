@@ -371,13 +371,14 @@ if __name__ == "__main__":
     ## number of bin per chromosome
     print("Caculate total number of bin per chromosome.")
     binSize = pd.read_csv(args.genome, sep = "\t", header = None)
+    resolution = int(args.resolution)
 
     binSizeDict = {}
     N = binSize.shape[0]
     for i in range(N):
         chrome = binSize.iloc[i,0]
         size = binSize.iloc[i,1]
-        binSizeDict[chrome] = size
+        binSizeDict[chrome] = size + resolution
     
     ## cell info file
     print("Prepare cell summary file.")
@@ -397,7 +398,6 @@ if __name__ == "__main__":
     files.sort()
     
     ## read all the files and sort by cell file name
-    resolution = int(args.resolution)
     coreN = int(args.parallelCPU)
     if args.bandMax == "whole":
         used_diags = "whole"
